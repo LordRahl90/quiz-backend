@@ -1,0 +1,50 @@
+version: "3"
+services:
+  proxy:
+    container_name: "little_quiz_proxy"
+    image: lordrahl/reverseproxy
+    build:
+      dockerfile: ./.docker/app.docker
+      context: ./
+    restart: always
+    ports:
+      - 8080:80
+    depends_on:
+      - api
+    networks:
+      - littlequizes
+  api:
+    image: lordrahl/little-quiz
+    build: 
+      dockerfile: ./.docker/Dockerfile
+      context: ./
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 100M
+    container_name: "little-quiz"
+    ports:
+      - "5000:5000"
+    networks:
+      - littlequizes
+    links:
+      - database
+    depends_on:
+      - database
+  
+  database:
+    image: postgres
+    container_name: "little_quiz_db"
+    environment:
+      POSTGRES_DB: little_quiz
+      POSTGRES_USER: little_quiz_user
+      POSTGRES_PASSWORD: little_quiz_password01@
+    ports:
+      - 15432:5432
+    networks:
+      - littlequizes
+  
+networks: 
+  littlequizes:

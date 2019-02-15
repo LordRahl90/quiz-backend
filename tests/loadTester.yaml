@@ -1,0 +1,22 @@
+config:
+  target: http://localhost:5000
+  phases:
+    - duration: 120
+      name: "Bumping Up Application"
+      arrivalRate: 10
+      rampTo: 50
+    - duration: 600
+      arrivalRate: 50
+      rampTo: 200
+      name: "Increase In Load."
+
+  defaults:
+
+scenarios:
+  - flow:
+    - post:
+        name: "Authenticating users into the system"
+        url: "/api/user/login"
+        json:
+          email: "tolaabbey009@gmail.com"
+          password: "fabregas01#"
